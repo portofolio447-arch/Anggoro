@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Anggoro Pinastyawan | Logistics Operations</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #1A1A1C;
+      color: #F0EFED;
+      overflow-x: hidden;
+    }
+    #canvas-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .split-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(125deg, #2C2C2E 0%, #2C2C2E 50%, #6B1E2A 50%, #6B1E2A 100%);
+      opacity: 0.7;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .grain {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJmIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjQiIG51bU9jdGF2ZXM9IjMiLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWx0ZXI9InVybCgjZikiIG9wYWNpdHk9IjAuMDYiLz48L3N2Zz4=');
+      pointer-events: none;
+      z-index: 2;
+    }
+    .navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 100;
+      background: rgba(26, 26, 28, 0.88);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(201, 168, 124, 0.25);
+    }
+    .nav-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0.8rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 700;
+      font-size: 1.5rem;
+      background: linear-gradient(135deg, #F0EFED, #C9A87C);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+      flex-wrap: wrap;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: #F0EFED;
+      font-weight: 500;
+      font-size: 0.85rem;
+      transition: 0.2s;
+      position: relative;
+    }
+    .nav-links a:hover, .nav-links a.active { color: #C9A87C; }
+    .nav-links a.active::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: #C9A87C;
+      border-radius: 2px;
+    }
+    .container {
+      position: relative;
+      z-index: 15;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 110px 2rem 4rem;
+    }
+    .section {
+      display: none;
+    }
+    .section.active { display: block; animation: fadeSection 0.4s ease forwards; }
+    @keyframes fadeSection { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+    .section-header { text-align: center; margin-bottom: 2rem; }
+    .section-header .tag { font-size: 0.7rem; letter-spacing: 4px; color: #C9A87C; text-transform: uppercase; display: block; }
+    .section-header h2 { font-family: 'Cormorant Garamond', serif; font-size: 2.6rem; font-weight: 600; background: linear-gradient(120deg, #F0EFED, #C9A87C); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+    /* Hero layout */
+    .hero { display: flex; align-items: center; gap: 4rem; flex-wrap: wrap; flex-direction: row; }
+    .hero-content { flex: 1.2; }
+    .hero-badge { background: rgba(201,168,124,0.15); display: inline-block; padding: 0.2rem 1rem; border-radius: 60px; font-size: 0.7rem; font-weight: 700; color: #C9A87C; margin-bottom: 1rem; }
+    .hero-content h1 { font-family: 'Cormorant Garamond', serif; font-size: 4rem; font-weight: 700; line-height: 1.1; margin-bottom: 0.5rem; }
+    .hero-sub { font-size: 1rem; font-weight: 600; color: #C9A87C; margin: 0.8rem 0; }
+    .hero-content p { color: #D5D2CC; line-height: 1.7; }
+    .btn-group { display: flex; gap: 1rem; margin-top: 2rem; }
+    .btn { padding: 0.8rem 1.8rem; border-radius: 60px; font-weight: 700; transition: 0.2s; cursor: pointer; border: none; background: transparent; }
+    .btn-primary { background: #C9A87C; color: #1A1A1C; }
+    .btn-primary:hover { background: #D9BA92; transform: translateY(-3px); }
+    .btn-outline { border: 1px solid #C9A87C; color: #C9A87C; }
+    .btn-outline:hover { background: rgba(201,168,124,0.1); transform: translateY(-3px); }
+
+    .hero-frame { flex: 0.9; }
+    .premium-frame {
+      background: rgba(44,44,46,0.5);
+      border-radius: 40% 60% 65% 35% / 40% 45% 55% 60%;
+      padding: 0.6rem;
+      border: 1px solid rgba(201,168,124,0.5);
+      backdrop-filter: blur(4px);
+      position: relative;
+      overflow: hidden;
+    }
+    .premium-frame::after { content: ''; position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(107,30,42,0.25); border-radius: inherit; pointer-events: none; }
+    .premium-frame img { width: 100%; border-radius: inherit; display: block; filter: brightness(0.98) contrast(1.05) saturate(1.1); }
+    .premium-frame:hover { transform: rotate(1deg) scale(1.01); }
+
+    /* About Cards */
+    .about-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 2rem; margin-top: 2rem; }
+    .about-card { background: rgba(44,44,46,0.4); backdrop-filter: blur(6px); border-radius: 1.8rem; padding: 1.5rem; text-align: center; transition: 0.25s; }
+    .about-card i { font-size: 2rem; color: #C9A87C; margin-bottom: 1rem; }
+    .about-card h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; margin-bottom: 0.5rem; }
+    .about-card p { font-size: 0.85rem; color: #D5D2CC; }
+    .about-card:hover { transform: translateY(-8px); border: 1px solid rgba(201,168,124,0.5); }
+
+    /* Experience dual */
+    .exp-dual { display: grid; grid-template-columns: 1fr 0.85fr; gap: 2rem; align-items: start; }
+    .exp-list { display: flex; flex-direction: column; gap: 1.2rem; }
+    .exp-item { background: rgba(44,44,46,0.4); backdrop-filter: blur(6px); border-radius: 1rem; padding: 1rem; border-left: 3px solid #C9A87C; transition: 0.2s; }
+    .exp-item:hover { background: rgba(44,44,46,0.6); transform: translateX(5px); }
+    .exp-date { font-size: 0.7rem; font-weight: 700; color: #C9A87C; letter-spacing: 1px; }
+    .exp-title { font-weight: 800; font-size: 0.95rem; margin: 0.2rem 0; color: #F0EFED; }
+    .exp-company { color: #C9A87C; font-size: 0.8rem; font-weight: 600; }
+    .exp-desc { color: #D5D2CC; font-size: 0.8rem; margin-top: 0.3rem; padding-left: 1rem; }
+
+    .exp-photo-card {
+      background: rgba(44,44,46,0.4);
+      border-radius: 1.5rem;
+      padding: 0.6rem;
+      border: 1px solid rgba(201,168,124,0.4);
+      transition: 0.3s;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .exp-photo-card::after { content: ''; position: absolute; top:0; left:0; width:100%; height:100%; background: radial-gradient(circle at 30% 40%, rgba(107,30,42,0.2), transparent 70%); pointer-events: none; }
+    .exp-photo-card img { width: 100%; border-radius: 1.2rem; display: block; filter: sepia(0.2) saturate(1.2) brightness(0.96); transition: 0.3s; }
+    .exp-photo-card:hover { transform: translateY(-5px); border-color: #C9A87C; }
+    .exp-photo-card:hover img { filter: sepia(0.15) saturate(1.3) brightness(1); }
+
+    /* Skills */
+    .skill-cloud { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.8rem; margin-top: 1.5rem; }
+    .skill-pill { background: rgba(44,44,46,0.5); padding: 0.6rem 1.3rem; border-radius: 60px; font-size: 0.8rem; font-weight: 500; border: 1px solid rgba(201,168,124,0.3); transition: 0.2s; display: inline-flex; align-items: center; gap: 0.5rem; }
+    .skill-pill i { color: #C9A87C; }
+    .skill-pill:hover { background: #C9A87C; color: #1A1A1C; transform: translateY(-3px); }
+
+    /* Contact */
+    .contact-card-unique { background: rgba(44,44,46,0.4); border-radius: 2.5rem; padding: 2rem; text-align: center; max-width: 700px; margin: 0 auto; }
+    .contact-avatar { width: 130px; height: 130px; border-radius: 50%; overflow: hidden; margin: 0 auto 1rem; border: 3px solid #C9A87C; padding: 0.2rem; position: relative; }
+    .contact-avatar::after { content: ''; position: absolute; top:0; left:0; width:100%; height:100%; background: radial-gradient(circle, rgba(107,30,42,0.3), transparent 70%); border-radius: 50%; pointer-events: none; }
+    .contact-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; filter: brightness(0.98) saturate(1.1); }
+    .contact-info-unique p { margin: 0.6rem 0; display: flex; align-items: center; justify-content: center; gap: 0.8rem; }
+    .contact-buttons { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem; }
+    footer { text-align: center; margin-top: 4rem; padding-top: 2rem; border-top: 1px solid rgba(201,168,124,0.2); font-size: 0.7rem; }
+
+    @media (max-width: 900px) {
+      .hero { flex-direction: column; text-align: center; }
+      .exp-dual { grid-template-columns: 1fr; }
+      .container { padding: 100px 1.5rem 2rem; }
+      .hero-content h1 { font-size: 3rem; }
+    }
+  </style>
+</head>
+<body>
+<div id="canvas-bg"></div>
+<div class="split-overlay"></div>
+<div class="grain"></div>
+
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="logo">✦ ANGGORO</div>
+    <ul class="nav-links">
+      <li><a href="#" data-section="home" class="nav-link active">Home</a></li>
+      <li><a href="#" data-section="about" class="nav-link">About</a></li>
+      <li><a href="#" data-section="experience" class="nav-link">Experience</a></li>
+      <li><a href="#" data-section="skills" class="nav-link">Skills</a></li>
+      <li><a href="#" data-section="contact" class="nav-link">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="container">
+  <!-- HOME -->
+  <section id="home" class="section active">
+    <div class="hero">
+      <div class="hero-frame">
+        <div class="premium-frame"><img src="assets/img/profile.png" alt="Anggoro"></div>
+      </div>
+      <div class="hero-content">
+        <div class="hero-badge">OPERATIONAL EXCELLENCE</div>
+        <h1>ANGGORO<br>PINASTYAWAN</h1>
+        <div class="hero-sub">Logistics & Operations Specialist</div>
+        <p>10+ tahun pengalaman di retail, manufaktur, distribusi, warehouse, inventory control, fleet management, sparepart admin, purchase request, quality control. Terbiasa koordinasi lintas departemen dengan ritme tinggi.</p>
+        <div class="btn-group">
+          <button class="btn btn-primary" id="expBtn"><i class="fas fa-briefcase"></i> View Experience</button>
+          <button class="btn btn-outline" id="contactBtn"><i class="fas fa-paper-plane"></i> Contact</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT (Profil lengkap CV) -->
+  <section id="about" class="section">
+    <div class="section-header">
+      <span class="tag">PROFILE</span>
+      <h2>About Me</h2>
+    </div>
+    <div style="background: rgba(44,44,46,0.3); border-radius: 2rem; padding: 2rem; text-align: center; max-width: 1000px; margin: 0 auto;">
+      <p>Profesional di bidang operasional dan administrasi logistik dengan pengalaman lebih dari 10 tahun di sektor retail, manufaktur, distribusi, dan warehouse management. Berpengalaman dalam inventory control, fleet management, sparepart administration, purchase request, quality control. Terbiasa bekerja dalam lingkungan operasional ritme tinggi, membutuhkan ketelitian, pengendalian data, serta koordinasi lintas departemen. Memiliki komunikasi baik, adaptabilitas tinggi, serta problem solving sistematis.</p>
+    </div>
+    <div class="about-grid">
+      <div class="about-card"><i class="fas fa-boxes"></i><h4>Inventory Control</h4><p>Stock opname, monitoring, akurasi data</p></div>
+      <div class="about-card"><i class="fas fa-truck"></i><h4>Fleet Management</h4><p>Monitoring armada, jadwal, administrasi</p></div>
+      <div class="about-card"><i class="fas fa-clipboard-list"></i><h4>Purchase Request</h4><p>Membuat & monitoring PR sparepart</p></div>
+      <div class="about-card"><i class="fas fa-chart-line"></i><h4>Operational Reporting</h4><p>Laporan distribusi & inventory</p></div>
+      <div class="about-card"><i class="fas fa-check-double"></i><h4>Quality Control</h4><p>Inspeksi produksi, standar kualitas</p></div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE (data CV lengkap) -->
+  <section id="experience" class="section">
+    <div class="section-header">
+      <span class="tag">CAREER TIMELINE</span>
+      <h2>Work Experience</h2>
+    </div>
+    <div class="exp-dual">
+      <div class="exp-list">
+        <div class="exp-item"><div class="exp-date">2024 – Sekarang</div><div class="exp-title">Inventory & Delivery Order Improvement Specialist Staff</div><div class="exp-company">PT Linus Logistics</div><div class="exp-desc">Monitoring inventory & delivery order, sinkronisasi stok, improvement flow distribusi, koordinasi warehouse & pengiriman, laporan operasional.</div></div>
+        <div class="exp-item"><div class="exp-date">2019 – 2024</div><div class="exp-title">Staff Fleet Management & Admin Sparepart (PR)</div><div class="exp-company">PT Lintas Usahatama Trans (LINUS)</div><div class="exp-desc">Monitoring operasional kendaraan, administrasi fleet, Purchase Request, kontrol stok sparepart, koordinasi warehouse & purchasing.</div></div>
+        <div class="exp-item"><div class="exp-date">2018 – 2019</div><div class="exp-title">Staff Administrasi</div><div class="exp-company">PT Reska Multi Usaha</div><div class="exp-desc">Administrasi barang masuk/keluar, monitoring inventory, pelaporan stock harian/bulanan, pengelolaan dokumen operasional.</div></div>
+        <div class="exp-item"><div class="exp-date">2017 – 2018</div><div class="exp-title">Operator Mesin Printing</div><div class="exp-company">PT Wahyu Kartumasindo Internasional</div><div class="exp-desc">Mengoperasikan mesin printing, monitoring hasil cetak, menjaga kualitas sesuai SOP, target produksi.</div></div>
+        <div class="exp-item"><div class="exp-date">2016</div><div class="exp-title">QC Inspector</div><div class="exp-company">PT Progress Diecast</div><div class="exp-desc">Pengecekan part produksi, identifikasi OK/Not OK, pelaporan harian, monitoring kualitas.</div></div>
+        <div class="exp-item"><div class="exp-date">2015 – 2016</div><div class="exp-title">Crew Store / Sales Promotion</div><div class="exp-company">Matahari Department Store</div><div class="exp-desc">Promosi produk, pencapaian target penjualan, penataan display, stock opname, pelayanan pelanggan.</div></div>
+        <div class="exp-item"><div class="exp-date">2014 – 2015</div><div class="exp-title">Crew Store / Pramuniaga</div><div class="exp-company">Alfamart</div><div class="exp-desc">Operasional toko harian, penataan stok, stock opname, pelayanan pelanggan, pengendalian stok barang.</div></div>
+      </div>
+      <div class="exp-photo-card">
+        <img src="assets/img/ex.png" alt="Fleet & inventory">
+        <div style="text-align: center; margin-top: 0.6rem; font-size: 0.7rem; color: #C9A87C;">fleet management & inventory control</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS (lengkap dari CV) -->
+  <section id="skills" class="section">
+    <div class="section-header">
+      <span class="tag">EXPERTISE</span>
+      <h2>Skills & Tools</h2>
+    </div>
+    <div class="skill-cloud">
+      <span class="skill-pill"><i class="fas fa-boxes"></i> Inventory Control</span>
+      <span class="skill-pill"><i class="fas fa-truck"></i> Fleet Management</span>
+      <span class="skill-pill"><i class="fas fa-clipboard-list"></i> Purchase Request</span>
+      <span class="skill-pill"><i class="fas fa-chart-line"></i> Delivery Monitoring</span>
+      <span class="skill-pill"><i class="fas fa-warehouse"></i> Warehouse Admin</span>
+      <span class="skill-pill"><i class="fas fa-tools"></i> Sparepart Admin</span>
+      <span class="skill-pill"><i class="fas fa-chalkboard-user"></i> Operational Reporting</span>
+      <span class="skill-pill"><i class="fas fa-check-double"></i> Quality Control</span>
+      <span class="skill-pill"><i class="fas fa-file-excel"></i> Microsoft Excel</span>
+      <span class="skill-pill"><i class="fab fa-google"></i> Google Workspace</span>
+      <span class="skill-pill"><i class="fas fa-handshake"></i> Cross-functional Coordination</span>
+    </div>
+  </section>
+
+  <!-- CONTACT foto bn.png -->
+  <section id="contact" class="section">
+    <div class="section-header">
+      <span class="tag">CONNECT</span>
+      <h2>Let's Collaborate</h2>
+    </div>
+    <div class="contact-card-unique">
+      <div class="contact-avatar"><img src="assets/img/bn.png" alt="Anggoro"></div>
+      <div class="contact-info-unique">
+        <p><i class="fas fa-phone-alt"></i> 0856-2968-071</p>
+        <p><i class="fas fa-envelope"></i> anggoropinastyawan@gmail.com</p>
+        <p><i class="fab fa-linkedin"></i> linkedin.com/in/anggoro-pinastyawan</p>
+      </div>
+      <div class="contact-buttons">
+        <a href="https://wa.me/628562968071" target="_blank" class="btn btn-primary"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+        <a href="https://www.linkedin.com/in/anggoro-pinastyawan" target="_blank" class="btn btn-outline"><i class="fab fa-linkedin-in"></i> LinkedIn</a>
+        <a href="mailto:anggoropinastyawan@gmail.com" class="btn btn-outline"><i class="fas fa-envelope"></i> Email</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>© 2026 Anggoro Pinastyawan — Portfolio</footer>
+</main>
+
+<!-- Three.js Background (tetap) -->
+<script type="importmap">
+  { "imports": { "three": "https://unpkg.com/three@0.128.0/build/three.module.js" } }
+</script>
+<script type="module">
+  import * as THREE from 'three';
+  const container = document.getElementById('canvas-bg');
+  const scene = new THREE.Scene(); scene.background = null;
+  const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.set(0, 1.2, 11);
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor(0x000000, 0);
+  container.appendChild(renderer.domElement);
+  const ambient = new THREE.AmbientLight(0x332222); scene.add(ambient);
+  const dirLight = new THREE.DirectionalLight(0xC9A87C, 1); dirLight.position.set(2,3,4); scene.add(dirLight);
+  const fillLight = new THREE.PointLight(0x6B1E2A, 0.6); fillLight.position.set(-2,1,3); scene.add(fillLight);
+  const group = new THREE.Group();
+  const geo = new THREE.IcosahedronGeometry(0.5,0);
+  const goldMat = new THREE.MeshStandardMaterial({ color: 0xC9A87C, metalness:0.7, roughness:0.3 });
+  group.add(new THREE.Mesh(geo, goldMat));
+  for (let i=0;i<8;i++){
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.9,0.05,32,100), new THREE.MeshStandardMaterial({ color:0x6B1E2A, metalness:0.5 }));
+    ring.rotation.x = Math.PI/2; ring.rotation.z = (i/8)*Math.PI*2;
+    ring.position.set(Math.cos(i)*0.8, Math.sin(i*2)*0.3, Math.sin(i)*0.8);
+    group.add(ring);
+  }
+  scene.add(group);
+  const pc = 600, pos = new Float32Array(pc*3);
+  for(let i=0;i<pc;i++){ pos[i*3]=(Math.random()-0.5)*20; pos[i*3+1]=(Math.random()-0.5)*8; pos[i*3+2]=(Math.random()-0.5)*15-5; }
+  const particleGeo = new THREE.BufferGeometry(); particleGeo.setAttribute('position', new THREE.BufferAttribute(pos,3));
+  const points = new THREE.Points(particleGeo, new THREE.PointsMaterial({ color:0xC9A87C, size:0.05, transparent:true, opacity:0.4 }));
+  scene.add(points);
+  let time=0;
+  function animate3d(){
+    requestAnimationFrame(animate3d);
+    time+=0.005;
+    group.rotation.y = time*0.2; group.rotation.x = Math.sin(time*0.3)*0.1;
+    points.rotation.y = time*0.03;
+    camera.position.x += (0 - camera.position.x)*0.02; camera.lookAt(0,0,0);
+    renderer.render(scene,camera);
+  }
+  animate3d();
+  window.addEventListener('resize',()=>{ camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth,window.innerHeight); });
+</script>
+
+<script>
+  // section switching (tanpa efek animasi kompleks)
+  const sections = document.querySelectorAll('.section');
+  const navLinks = document.querySelectorAll('.nav-link');
+  const expBtn = document.getElementById('expBtn');
+  const contactBtn = document.getElementById('contactBtn');
+
+  function showSection(sectionId) {
+    sections.forEach(sec => sec.classList.remove('active'));
+    document.getElementById(sectionId).classList.add('active');
+    navLinks.forEach(link => {
+      if (link.getAttribute('data-section') === sectionId) link.classList.add('active');
+      else link.classList.remove('active');
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      showSection(link.getAttribute('data-section'));
+    });
+  });
+  if (expBtn) expBtn.addEventListener('click', () => showSection('experience'));
+  if (contactBtn) contactBtn.addEventListener('click', () => showSection('contact'));
+
+  // default
+  showSection('home');
+</script>
+</body>
+</html>
