@@ -118,7 +118,6 @@
     .section-header .tag { font-size: 0.7rem; letter-spacing: 4px; color: #C9A87C; text-transform: uppercase; display: block; }
     .section-header h2 { font-family: 'Cormorant Garamond', serif; font-size: 2.6rem; font-weight: 600; background: linear-gradient(120deg, #F0EFED, #C9A87C); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
-    /* Hero layout */
     .hero { display: flex; align-items: center; gap: 4rem; flex-wrap: wrap; flex-direction: row; }
     .hero-content { flex: 1.2; }
     .hero-badge { background: rgba(201,168,124,0.15); display: inline-block; padding: 0.2rem 1rem; border-radius: 60px; font-size: 0.7rem; font-weight: 700; color: #C9A87C; margin-bottom: 1rem; }
@@ -146,7 +145,6 @@
     .premium-frame img { width: 100%; border-radius: inherit; display: block; filter: brightness(0.98) contrast(1.05) saturate(1.1); }
     .premium-frame:hover { transform: rotate(1deg) scale(1.01); }
 
-    /* About Cards */
     .about-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 2rem; margin-top: 2rem; }
     .about-card { background: rgba(44,44,46,0.4); backdrop-filter: blur(6px); border-radius: 1.8rem; padding: 1.5rem; text-align: center; transition: 0.25s; }
     .about-card i { font-size: 2rem; color: #C9A87C; margin-bottom: 1rem; }
@@ -154,7 +152,6 @@
     .about-card p { font-size: 0.85rem; color: #D5D2CC; }
     .about-card:hover { transform: translateY(-8px); border: 1px solid rgba(201,168,124,0.5); }
 
-    /* Experience dual */
     .exp-dual { display: grid; grid-template-columns: 1fr 0.85fr; gap: 2rem; align-items: start; }
     .exp-list { display: flex; flex-direction: column; gap: 1.2rem; }
     .exp-item { background: rgba(44,44,46,0.4); backdrop-filter: blur(6px); border-radius: 1rem; padding: 1rem; border-left: 3px solid #C9A87C; transition: 0.2s; }
@@ -179,13 +176,61 @@
     .exp-photo-card:hover { transform: translateY(-5px); border-color: #C9A87C; }
     .exp-photo-card:hover img { filter: sepia(0.15) saturate(1.3) brightness(1); }
 
-    /* Skills */
-    .skill-cloud { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.8rem; margin-top: 1.5rem; }
-    .skill-pill { background: rgba(44,44,46,0.5); padding: 0.6rem 1.3rem; border-radius: 60px; font-size: 0.8rem; font-weight: 500; border: 1px solid rgba(201,168,124,0.3); transition: 0.2s; display: inline-flex; align-items: center; gap: 0.5rem; }
-    .skill-pill i { color: #C9A87C; }
-    .skill-pill:hover { background: #C9A87C; color: #1A1A1C; transform: translateY(-3px); }
+    /* Skills - separated into three columns */
+    .skills-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.8rem;
+      margin-top: 1.5rem;
+    }
+    .skill-category {
+      background: rgba(44,44,46,0.5);
+      backdrop-filter: blur(8px);
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      border: 1px solid rgba(201,168,124,0.2);
+      transition: 0.25s;
+    }
+    .skill-category:hover {
+      transform: translateY(-5px);
+      border-color: #C9A87C;
+    }
+    .skill-category h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: #C9A87C;
+    }
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+    .skill-pill {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(201,168,124,0.3);
+      padding: 0.4rem 1rem;
+      border-radius: 60px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #F0EFED;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .skill-pill i {
+      color: #C9A87C;
+    }
+    .skill-pill:hover {
+      background: #C9A87C;
+      color: #1A1A1C;
+      transform: translateY(-2px);
+    }
 
-    /* Contact */
     .contact-card-unique { background: rgba(44,44,46,0.4); border-radius: 2.5rem; padding: 2rem; text-align: center; max-width: 700px; margin: 0 auto; }
     .contact-avatar { width: 130px; height: 130px; border-radius: 50%; overflow: hidden; margin: 0 auto 1rem; border: 3px solid #C9A87C; padding: 0.2rem; position: relative; }
     .contact-avatar::after { content: ''; position: absolute; top:0; left:0; width:100%; height:100%; background: radial-gradient(circle, rgba(107,30,42,0.3), transparent 70%); border-radius: 50%; pointer-events: none; }
@@ -197,6 +242,7 @@
     @media (max-width: 900px) {
       .hero { flex-direction: column; text-align: center; }
       .exp-dual { grid-template-columns: 1fr; }
+      .skills-container { grid-template-columns: 1fr; gap: 1rem; }
       .container { padding: 100px 1.5rem 2rem; }
       .hero-content h1 { font-size: 3rem; }
     }
@@ -240,7 +286,7 @@
     </div>
   </section>
 
-  <!-- ABOUT (Profil lengkap CV) -->
+  <!-- ABOUT -->
   <section id="about" class="section">
     <div class="section-header">
       <span class="tag">PROFILE</span>
@@ -258,7 +304,7 @@
     </div>
   </section>
 
-  <!-- EXPERIENCE (data CV lengkap) -->
+  <!-- EXPERIENCE -->
   <section id="experience" class="section">
     <div class="section-header">
       <span class="tag">CAREER TIMELINE</span>
@@ -281,28 +327,58 @@
     </div>
   </section>
 
-  <!-- SKILLS (lengkap dari CV) -->
+  <!-- SKILLS (Hard Skills, Soft Skills, Software) -->
   <section id="skills" class="section">
     <div class="section-header">
       <span class="tag">EXPERTISE</span>
-      <h2>Skills & Tools</h2>
+      <h2>Skills & Competencies</h2>
     </div>
-    <div class="skill-cloud">
-      <span class="skill-pill"><i class="fas fa-boxes"></i> Inventory Control</span>
-      <span class="skill-pill"><i class="fas fa-truck"></i> Fleet Management</span>
-      <span class="skill-pill"><i class="fas fa-clipboard-list"></i> Purchase Request</span>
-      <span class="skill-pill"><i class="fas fa-chart-line"></i> Delivery Monitoring</span>
-      <span class="skill-pill"><i class="fas fa-warehouse"></i> Warehouse Admin</span>
-      <span class="skill-pill"><i class="fas fa-tools"></i> Sparepart Admin</span>
-      <span class="skill-pill"><i class="fas fa-chalkboard-user"></i> Operational Reporting</span>
-      <span class="skill-pill"><i class="fas fa-check-double"></i> Quality Control</span>
-      <span class="skill-pill"><i class="fas fa-file-excel"></i> Microsoft Excel</span>
-      <span class="skill-pill"><i class="fab fa-google"></i> Google Workspace</span>
-      <span class="skill-pill"><i class="fas fa-handshake"></i> Cross-functional Coordination</span>
+    <div class="skills-container">
+      <!-- Hard Skills -->
+      <div class="skill-category">
+        <h3><i class="fas fa-hard-hat"></i> Hard Skills</h3>
+        <div class="skill-tags">
+          <span class="skill-pill">Inventory Control</span>
+          <span class="skill-pill">Fleet Management</span>
+          <span class="skill-pill">Sparepart Administration</span>
+          <span class="skill-pill">Purchase Request (PR)</span>
+          <span class="skill-pill">Delivery Monitoring</span>
+          <span class="skill-pill">Warehouse Administration</span>
+          <span class="skill-pill">Stock Opname</span>
+          <span class="skill-pill">Quality Control Inspection</span>
+          <span class="skill-pill">Production Monitoring</span>
+          <span class="skill-pill">Operational Reporting</span>
+        </div>
+      </div>
+      <!-- Soft Skills -->
+      <div class="skill-category">
+        <h3><i class="fas fa-heart"></i> Soft Skills</h3>
+        <div class="skill-tags">
+          <span class="skill-pill">Communication</span>
+          <span class="skill-pill">Teamwork</span>
+          <span class="skill-pill">Adaptability</span>
+          <span class="skill-pill">Problem Solving</span>
+          <span class="skill-pill">Time Management</span>
+          <span class="skill-pill">Detail Oriented</span>
+          <span class="skill-pill">Operational Coordination</span>
+          <span class="skill-pill">Cross‑functional Coordination</span>
+        </div>
+      </div>
+      <!-- Software / Tools -->
+      <div class="skill-category">
+        <h3><i class="fas fa-laptop-code"></i> Software & Tools</h3>
+        <div class="skill-tags">
+          <span class="skill-pill">Microsoft Excel</span>
+          <span class="skill-pill">Microsoft Office</span>
+          <span class="skill-pill">Google Workspace</span>
+          <span class="skill-pill">Data Entry</span>
+          <span class="skill-pill">ERP Basic Understanding</span>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- CONTACT foto bn.png -->
+  <!-- CONTACT -->
   <section id="contact" class="section">
     <div class="section-header">
       <span class="tag">CONNECT</span>
@@ -323,10 +399,10 @@
     </div>
   </section>
 
-  <footer>© 2026 Anggoro Pinastyawan — Portfolio</footer>
+  <footer>© 2026 Anggoro Pinastyawan — Logistics Operations</footer>
 </main>
 
-<!-- Three.js Background (tetap) -->
+<!-- Three.js Background (unchanged) -->
 <script type="importmap">
   { "imports": { "three": "https://unpkg.com/three@0.128.0/build/three.module.js" } }
 </script>
@@ -373,7 +449,6 @@
 </script>
 
 <script>
-  // section switching (tanpa efek animasi kompleks)
   const sections = document.querySelectorAll('.section');
   const navLinks = document.querySelectorAll('.nav-link');
   const expBtn = document.getElementById('expBtn');
@@ -398,7 +473,6 @@
   if (expBtn) expBtn.addEventListener('click', () => showSection('experience'));
   if (contactBtn) contactBtn.addEventListener('click', () => showSection('contact'));
 
-  // default
   showSection('home');
 </script>
 </body>
